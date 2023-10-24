@@ -80,7 +80,7 @@ class Matrix
     public function subtractMatrix(Matrix $matrix): Matrix
     {
         if (!$this->sameSize($matrix)) {
-            throw new \LogicException('Matrix is not the same size');
+            throw new MatricesAreNotSameSize('Can\'t subtract matrices.');
         }
 
         return $this->each(fn($e, $x, $y) => $this->get($x, $y) - $matrix->get($x, $y));
