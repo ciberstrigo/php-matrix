@@ -1,0 +1,16 @@
+###> IDE/PhpStorm ###
+.idea
+###> IDE/PhpStorm ###
+
+/.env
+/.env.local
+/.env.local.php
+/.env.*.local
+/vendor/
+.phplint-cache
+.DS_store
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
