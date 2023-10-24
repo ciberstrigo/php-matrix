@@ -2,7 +2,9 @@
 
 namespace Leonidaveryanov\Matrix;
 
+use Leonidaveryanov\Matrix\Exceptions\IsNotSquareMatrix;
 use Leonidaveryanov\Matrix\Exceptions\MatricesAreNotSameSize;
+use Leonidaveryanov\Matrix\Exceptions\MatrixHasZeroDeterminant;
 use Leonidaveryanov\Matrix\Utils\MatrixDumper;
 use LogicException;
 
@@ -112,7 +114,7 @@ class Matrix
         }
 
         if (!$this->isSquare()) {
-            throw new LogicException('To calculate determinant, matrix must be squared');
+            throw new IsNotSquareMatrix('Can\'t calculate determinant.');
         }
 
         if (1 === $this->getWidth() && 1 === $this->getHeight()) {
@@ -142,11 +144,11 @@ class Matrix
     public function inverse(): Matrix
     {
         if (false === $this->isSquare()) {
-            throw new \LogicException('Matrix must be a square');
+            throw new IsNotSquareMatrix('Can\'t invert matrix.');
         }
 
         if (0 === $determinant = $this->determinant()) {
-            throw new \LogicException('Cant invert matrix with zero determinant');
+            throw new MatrixHasZeroDeterminant('Can\'t invert Matrix.');
         }
 
         $transposed = $this->cofactorMatrix()->transpose();
