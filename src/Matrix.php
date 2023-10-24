@@ -261,14 +261,13 @@ class Matrix
     public function productOnVectorAsColumn(Vector $vector): Vector
     {
         $res = new Vector();
-        for ($x = 0; $x < count($this->container); $x++) {
-            for ($y = 0; $y < count($this->container[$x]); $y++) {
-                if (!isset($res[$x])) {
-                    $res[$x] = 0;
-                }
-                $res[$x] += $this->container[$x][$y] * $vector[$y];
+        $tmp = $this->each(static function ($e, $x, $y) use ($vector) {
+            if (!isset($res[$x])) {
+                $res[$x] = 0;
             }
-        }
+            $res[$x] += $this->container[$x][$y] * $vector[$y];
+        });
+        unset($tmp);
 
         return $res;
     }
