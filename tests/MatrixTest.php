@@ -196,4 +196,22 @@ final class MatrixTest extends TestCase
 
         $this->assertEquals($expected->toArray(), $result->toArray());
     }
+
+    public function testGetRowGetColumn()
+    {
+        $matrix = new Matrix([
+            [3, 7, 4],
+            [5, 2, 8],
+            [1, 8, 0]
+        ]);
+
+        $this->assertEquals([3, 7, 4], $matrix->getRow(0));
+        $this->assertEquals([3, 5, 1], $matrix->getColumn(0));
+
+        $this->assertEquals([5, 2, 8], $matrix->getRow(1));
+        $this->assertEquals([7, 2, 8], $matrix->getColumn(1));
+
+        $this->assertEquals([1, 8, 0], $matrix->getRow(2));
+        $this->assertEquals([4, 8, 0], $matrix->getColumn(2));
+    }
 }
