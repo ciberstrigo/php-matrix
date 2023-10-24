@@ -4,6 +4,7 @@ namespace Leonidaveryanov\Matrix;
 
 use Leonidaveryanov\Matrix\Exceptions\IsNotSquareMatrix;
 use Leonidaveryanov\Matrix\Exceptions\MatricesAreNotSameSize;
+use Leonidaveryanov\Matrix\Exceptions\MatricesCantBeProduced;
 use Leonidaveryanov\Matrix\Exceptions\MatrixHasZeroDeterminant;
 use Leonidaveryanov\Matrix\Utils\MatrixDumper;
 use LogicException;
@@ -216,12 +217,16 @@ class Matrix
      */
     public function productOnMatrix(Matrix $matrix): Matrix
     {
-        if (!count($this->container) || !$matrix->getWidth()) {
-            throw new \LogicException('Matrix cant be produced');
+        if (!$this->getWidth() || !$matrix->getWidth()) {
+            throw new MatricesCantBeProduced('Incorrect size of matrices.');
         }
 
-        if (count($this->container[0]) !== $matrix->getWidth()) {
-            throw new \LogicException('Matrix cant be produced');
+        try {
+            if ($this->getHeight() !== $matrix->getWidth()) {
+                throw new MatricesCantBeProduced();
+            }
+        } catch (\Throwable $exception) {
+            throw new MatricesCantBeProduced('Width of one matrix should be equal to height of another matrix.');
         }
 
         $res = new Matrix();
