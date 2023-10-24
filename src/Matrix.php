@@ -94,12 +94,8 @@ class Matrix
     public function transpose(): Matrix
     {
         $res = new Matrix();
-
-        for ($x = 0; $x < $this->getWidth(); $x++) {
-            for ($y = 0; $y < $this->getHeight(); $y++) {
-                $res->set($y, $x, $this->get($x, $y));
-            }
-        }
+        $tmp = $this->each(fn($e, $x, $y) => $res->set($y, $x, $e));
+        unset($tmp);
 
         return $res;
     }
