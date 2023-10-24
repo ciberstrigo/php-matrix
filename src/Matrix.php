@@ -97,7 +97,7 @@ class Matrix
 
         for ($x = 0; $x < $this->getWidth(); $x++) {
             for ($y = 0; $y < $this->getHeight(); $y++) {
-                $res->set($x, $y, $this->get($y, $x));
+                $res->set($y, $x, $this->get($x, $y));
             }
         }
 

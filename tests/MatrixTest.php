@@ -2,6 +2,7 @@
 
 use Leonidaveryanov\Matrix\Exceptions\KeyIsNotPositiveInteger;
 use Leonidaveryanov\Matrix\Matrix;
+use Leonidaveryanov\Matrix\Utils\MatrixDumper;
 use Leonidaveryanov\Matrix\Vector;
 use PHPUnit\Framework\TestCase;
 
@@ -175,6 +176,22 @@ final class MatrixTest extends TestCase
             [10, 10, 10],
             [10, 10, 10],
             [10, 10, 10]
+        ]);
+
+        $this->assertEquals($expected->toArray(), $result->toArray());
+    }
+
+    public function testTranspose()
+    {
+        $result = (new Matrix([
+            [2, 1],
+            [-3, 0],
+            [4, -1]
+        ]))->transpose();
+
+        $expected = new Matrix([
+            [2, -3, 4],
+            [1, 0, -1],
         ]);
 
         $this->assertEquals($expected->toArray(), $result->toArray());
