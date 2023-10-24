@@ -69,15 +69,7 @@ class Matrix
             throw new MatricesAreNotSameSize('Matrices can\'t be added.');
         }
 
-        $res = new Matrix();
-
-        for ($x = 0; $x < $this->getWidth(); $x++) {
-            for ($y = 0; $y < $this->getHeight(); $y++) {
-                $res->set($x, $y, $this->get($x, $y) + $matrix->get($x, $y));
-            }
-        }
-
-        return $res;
+        return $this->each(fn($e, $x, $y) => $this->get($x, $y) + $matrix->get($x, $y));
     }
 
     /**
