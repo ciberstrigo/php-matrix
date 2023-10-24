@@ -205,15 +205,9 @@ class Matrix
      */
     public function cofactorMatrix(): Matrix
     {
-        $res = $this->minorMatrix();
-        for ($x = 0; $x < $this->getWidth(); $x++) {
-            for ($y = 0; $y < $this->getHeight(); $y++) {
-                $sign = (($y+$x) % 2 == 0) ? 1 : -1;
-                $res->set($x, $y, $res->get($x, $y) * $sign);
-            }
-        }
-
-        return $res;
+        return $this
+            ->minorMatrix()
+            ->each(fn($e, $x, $y) => $e * (($y+$x) % 2 === 0 ? 1 : -1));
     }
 
     /**
