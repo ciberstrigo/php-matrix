@@ -251,14 +251,7 @@ class Matrix
      */
     public function productOnScalar(int|float $num): Matrix
     {
-        $res = new Matrix();
-        for ($x = 0; $x < $this->getWidth(); $x++) {
-            for ($y = 0; $y < $this->getHeight(); $y++) {
-                $res->set($x, $y, $this->get($x, $y) * $num);
-            }
-        }
-
-        return $res;
+        return $this->each(fn($e) => $e * $num);
     }
 
     /**
