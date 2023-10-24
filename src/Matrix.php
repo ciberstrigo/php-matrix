@@ -375,18 +375,6 @@ class Matrix
     }
 
     /**
-     * @param int $x
-     * @param mixed $value
-     * @return Matrix
-     */
-    public function insertIntoRow(int $x, mixed $value): Matrix
-    {
-        $clone = clone $this;
-        $clone->container[$x][] = $value;
-        return $clone;
-    }
-
-    /**
      * @return array
      */
     public function toArray(): array
