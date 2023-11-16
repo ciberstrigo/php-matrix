@@ -2,7 +2,6 @@
 
 use Leonidaveryanov\Matrix\Exceptions\KeyIsNotPositiveInteger;
 use Leonidaveryanov\Matrix\Matrix;
-use Leonidaveryanov\Matrix\Utils\MatrixDumper;
 use Leonidaveryanov\Matrix\Vector;
 use PHPUnit\Framework\TestCase;
 
