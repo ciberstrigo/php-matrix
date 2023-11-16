@@ -4,7 +4,7 @@ namespace Leonidaveryanov\Matrix\Exceptions;
 
 use Throwable;
 
-class MatricesAreNotSameSize extends \LogicException
+class MatricesCantBeProduced extends \LogicException
 {
     public function __construct(string $message = "", int $code = 0, ?Throwable $previous = null)
     {
@@ -13,6 +13,6 @@ class MatricesAreNotSameSize extends \LogicException
 
     public function __toString(): string
     {
-        return sprintf('%s Matrices are not the same size', $this->message);
+        return sprintf('%s Matrices can\'t. be produced', $this->message);
     }
 }

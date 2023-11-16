@@ -2,7 +2,10 @@
 
 namespace Leonidaveryanov\Matrix;
 
+use Leonidaveryanov\Matrix\Exceptions\IsNotSquareMatrix;
 use Leonidaveryanov\Matrix\Exceptions\MatricesAreNotSameSize;
+use Leonidaveryanov\Matrix\Exceptions\MatricesCantBeProduced;
+use Leonidaveryanov\Matrix\Exceptions\MatrixHasZeroDeterminant;
 use Leonidaveryanov\Matrix\Utils\MatrixDumper;
 use LogicException;
 
@@ -69,15 +72,7 @@ class Matrix
             throw new MatricesAreNotSameSize('Matrices can\'t be added.');
         }
 
-        $res = new Matrix();
-
-        for ($x = 0; $x < $this->getWidth(); $x++) {
-            for ($y = 0; $y < $this->getHeight(); $y++) {
-                $res->set($x, $y, $this->get($x, $y) + $matrix->get($x, $y));
-            }
-        }
-
-        return $res;
+        return $this->each(fn($e, $x, $y) => $this->get($x, $y) + $matrix->get($x, $y));
     }
 
     /**
@@ -88,7 +83,7 @@ class Matrix
     public function subtractMatrix(Matrix $matrix): Matrix
     {
         if (!$this->sameSize($matrix)) {
-            throw new \LogicException('Matrix is not the same size');
+            throw new MatricesAreNotSameSize('Can\'t subtract matrices.');
         }
 
         return $this->each(fn($e, $x, $y) => $this->get($x, $y) - $matrix->get($x, $y));
@@ -102,12 +97,8 @@ class Matrix
     public function transpose(): Matrix
     {
         $res = new Matrix();
-
-        for ($x = 0; $x < $this->getWidth(); $x++) {
-            for ($y = 0; $y < $this->getHeight(); $y++) {
-                $res->set($x, $y, $this->get($y, $x));
-            }
-        }
+        $tmp = $this->each(fn($e, $x, $y) => $res->set($y, $x, $e));
+        unset($tmp);
 
         return $res;
     }
@@ -124,7 +115,7 @@ class Matrix
         }
 
         if (!$this->isSquare()) {
-            throw new LogicException('To calculate determinant, matrix must be squared');
+            throw new IsNotSquareMatrix('Can\'t calculate determinant.');
         }
 
         if (1 === $this->getWidth() && 1 === $this->getHeight()) {
@@ -154,11 +145,11 @@ class Matrix
     public function inverse(): Matrix
     {
         if (false === $this->isSquare()) {
-            throw new \LogicException('Matrix must be a square');
+            throw new IsNotSquareMatrix('Can\'t invert matrix.');
         }
 
         if (0 === $determinant = $this->determinant()) {
-            throw new \LogicException('Cant invert matrix with zero determinant');
+            throw new MatrixHasZeroDeterminant('Can\'t invert Matrix.');
         }
 
         $transposed = $this->cofactorMatrix()->transpose();
@@ -215,15 +206,9 @@ class Matrix
      */
     public function cofactorMatrix(): Matrix
     {
-        $res = $this->minorMatrix();
-        for ($x = 0; $x < $this->getWidth(); $x++) {
-            for ($y = 0; $y < $this->getHeight(); $y++) {
-                $sign = (($y+$x) % 2 == 0) ? 1 : -1;
-                $res->set($x, $y, $res->get($x, $y) * $sign);
-            }
-        }
-
-        return $res;
+        return $this
+            ->minorMatrix()
+            ->each(fn($e, $x, $y) => $e * (($y+$x) % 2 === 0 ? 1 : -1));
     }
 
     /**
@@ -232,12 +217,16 @@ class Matrix
      */
     public function productOnMatrix(Matrix $matrix): Matrix
     {
-        if (!count($this->container) || !$matrix->getWidth()) {
-            throw new \LogicException('Matrix cant be produced');
+        if (!$this->getWidth() || !$matrix->getWidth()) {
+            throw new MatricesCantBeProduced('Incorrect size of matrices.');
         }
 
-        if (count($this->container[0]) !== $matrix->getWidth()) {
-            throw new \LogicException('Matrix cant be produced');
+        try {
+            if ($this->getHeight() !== $matrix->getWidth()) {
+                throw new MatricesCantBeProduced();
+            }
+        } catch (\Throwable $exception) {
+            throw new MatricesCantBeProduced('Width of one matrix should be equal to height of another matrix.');
         }
 
         $res = new Matrix();
@@ -261,14 +250,7 @@ class Matrix
      */
     public function productOnScalar(int|float $num): Matrix
     {
-        $res = new Matrix();
-        for ($x = 0; $x < $this->getWidth(); $x++) {
-            for ($y = 0; $y < $this->getHeight(); $y++) {
-                $res->set($x, $y, $this->get($x, $y) * $num);
-            }
-        }
-
-        return $res;
+        return $this->each(fn($e) => $e * $num);
     }
 
     /**
@@ -278,14 +260,13 @@ class Matrix
     public function productOnVectorAsColumn(Vector $vector): Vector
     {
         $res = new Vector();
-        for ($x = 0; $x < count($this->container); $x++) {
-            for ($y = 0; $y < count($this->container[$x]); $y++) {
-                if (!isset($res[$x])) {
-                    $res[$x] = 0;
-                }
-                $res[$x] += $this->container[$x][$y] * $vector[$y];
+        $tmp = $this->each(static function ($e, $x, $y) use ($vector) {
+            if (!isset($res[$x])) {
+                $res[$x] = 0;
             }
-        }
+            $res[$x] += $this->container[$x][$y] * $vector[$y];
+        });
+        unset($tmp);
 
         return $res;
     }
@@ -391,18 +372,6 @@ class Matrix
         }
 
         return $forEach;
-    }
-
-    /**
-     * @param int $x
-     * @param mixed $value
-     * @return Matrix
-     */
-    public function insertIntoRow(int $x, mixed $value): Matrix
-    {
-        $clone = clone $this;
-        $clone->container[$x][] = $value;
-        return $clone;
     }
 
     /**

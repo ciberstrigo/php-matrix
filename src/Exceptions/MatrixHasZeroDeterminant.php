@@ -1,10 +1,11 @@
 <?php declare(strict_types=1);
 
+
 namespace Leonidaveryanov\Matrix\Exceptions;
 
 use Throwable;
 
-class MatricesAreNotSameSize extends \LogicException
+class MatrixHasZeroDeterminant extends \LogicException
 {
     public function __construct(string $message = "", int $code = 0, ?Throwable $previous = null)
     {
@@ -13,6 +14,6 @@ class MatricesAreNotSameSize extends \LogicException
 
     public function __toString(): string
     {
-        return sprintf('%s Matrices are not the same size', $this->message);
+        return sprintf('%s Matrix Has zero determinant.', $this->message);
     }
 }
