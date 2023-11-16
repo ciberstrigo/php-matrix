@@ -16,5 +16,8 @@
             "email": "ciberstrigo@gmail.com"
         }
     ],
-    "require": {}
+    "require": {},
+    "scripts": {
+        "test": "./vendor/bin/phpunit tests/"
+    }
 }
